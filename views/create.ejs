@@ -1,0 +1,20 @@
+<label for="writer">writer</label>
+<input name="writer" id="writer">
+<label for="title">title</label>
+<input name="title" id="title">
+<label for="contents">contents</label>
+<input type="text" name="contents" id="contents">
+<input type="button" value="등록" onclick="create()">
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+    data = {"ContentNo":0, "Title":"rrrrrr 게시글","Contents":"게시글 내용","Writer":"dla6425","CreateDate":"now()","ViewCount":0}
+    function create() {
+        console.log("호출")
+        axios.post('/contents', data)
+            .then((result) => {
+                console.log("RN??")
+            }).catch((err) => {
+                alert(err);
+            })
+        }
+</script>

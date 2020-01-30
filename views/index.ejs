@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>자유게시판</title>
+    <style>
+        body {
+            width: 950px;
+            height: auto;
+        }
+        table {
+            margin: 30;
+            text-align: center;
+            border-collapse: collapse;
+            border-top: 1px solid #d4d4d4;
+        }
+
+        thead {
+            background-color: #E1E1E1;
+        }
+
+        thead, td {
+            padding: 10px 30px;
+        }
+
+        thead, tr{
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        div {
+            margin:auto;
+        }
+
+        div.createBtn {
+            margin:10px;
+            position: relative;
+            text-align: right;
+            left: -18px;
+        }
+
+    </style>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div>
+        <h2>자유게시판</h2>
+        <pre>자유롭게 글을 쓸 수 있는 게시판입니다.</pre>
+    </div>
+    <div>
+        <table class="my-table">
+            <thead>
+                <tr>
+                    <td>번호</td>
+                    <td>제목</td>
+                    <td>내용</td>
+                    <td>글쓴이</td>
+                    <td>작성일</td>
+                    <td>조회수</td>
+                </tr>
+            </thead>
+            <tbody class="post">
+
+            </tbody>
+        </table>
+    </div>
+    <!-- <div class="createBtn">
+        <input type="button" value="글쓰기" onclick="move()">
+    </div> -->
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop"  style="margin-top: 10px;">
+    글쓰기
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <label for="writer">writer</label>
+            <input name="writer" id="writer">
+            <label for="title">title</label>
+            <input name="title" id="title">
+            <label for="contents">contents</label>
+            <input type="text" name="contents" id="contents">
+            <input type="button" value="등록" onclick="create()">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Understood</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+    console.log("start")
+    $(document).ready(function(){
+        init();
+        // initEvent();
+    })
+        
+    function init() {
+        read();
+    }
+ 
+    function read() {
+        axios.get('/contents')
+            .then((result) => {
+            writePost(result.data['resultValue']);
+            }).catch((err) => {
+                alert(err);
+            })
+        }
+    
+    function writePost(rows) {
+        for(var line = 0; line < rows.length; line++){
+            var newPost = "<tr>"
+            for(var key in rows[line]){
+                newPost += "<td>" + rows[line][key] + "</td>"
+            }
+            newPost += "</tr>"
+            $("table.my-table > tbody:last").append(newPost)
+        }
+    }
+
+    function clearPost() {
+        $("table.my-table > tbody:last").empty();
+    }
+
+    function move() {
+        location.href = "/create"
+    }
+    
+    function create() {
+        let data = {"contentNo":0, "title":"rrrrrr 게시글","contents":"게시글 내용","writer":"dla6425","createDate":"now()","viewCount":0}
+        console.log("호출")
+        axios.post('/contents', data)
+            .then((result) => {
+                clearPost();
+                read();
+                console.log("RN??")
+            }).catch((err) => {
+                alert(err);
+            })
+        }
+</script>
+</html>
